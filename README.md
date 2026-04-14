@@ -1,5 +1,39 @@
 # 🧠 Guía de Ollama para Ingeniería en Computación
 
+## Índice
+
+- [¿Qué es Ollama?](#que-es-ollama)
+- [Instalación de Ollama](#instalacion-de-ollama)
+  - [macOS / Linux](#macos-linux)
+  - [Windows](#windows)
+- [Instalación de modelos](#instalacion-de-modelos)
+- [Guía básica de comandos](#guia-basica-de-comandos)
+  - [Descargar un modelo](#descargar-un-modelo)
+  - [Ejecutar un modelo](#ejecutar-un-modelo)
+  - [Listar modelos instalados](#listar-modelos-instalados)
+  - [Eliminar un modelo](#eliminar-un-modelo)
+  - [Ver información de un modelo](#ver-informacion-de-un-modelo)
+- [Ejemplo básico de uso](#ejemplo-basico-de-uso)
+- [API local integrada de Ollama](#api-local-integrada-de-ollama)
+  - [Endpoints más importantes](#endpoints-mas-importantes)
+    - [`POST /api/generate`](#post-apigenerate)
+    - [`POST /api/chat`](#post-apichat)
+    - [`GET /api/tags`](#get-apitags)
+    - [`POST /api/show`](#post-apishow)
+    - [`POST /api/embed`](#post-apiembed)
+    - [`POST /api/create`](#post-apicreate)
+  - [Compatibilidad con herramientas tipo OpenAI](#compatibilidad-con-herramientas-tipo-openai)
+- [Personalización del modelo](#personalizacion-del-modelo)
+  - [1. Personalización por solicitud](#1-personalizacion-por-solicitud)
+  - [2. Crear una variante personalizada con `create`](#2-crear-una-variante-personalizada-con-create)
+  - [3. Personalización avanzada con `Modelfile`](#3-personalizacion-avanzada-con-modelfile)
+  - [Instrucciones útiles dentro de un `Modelfile`](#instrucciones-utiles-dentro-de-un-modelfile)
+  - [Parámetros comunes que vale la pena conocer](#parametros-comunes-que-vale-la-pena-conocer)
+  - [Uso de adaptadores y ajustes finos](#uso-de-adaptadores-y-ajustes-finos)
+  - [Recomendaciones prácticas](#recomendaciones-practicas)
+- [Referencias oficiales](#referencias-oficiales)
+
+<a id="que-es-ollama"></a>
 ## 📌 ¿Qué es Ollama?
 
 Ollama es una herramienta que permite ejecutar **modelos de lenguaje (LLMs) de forma local** en tu computador, sin depender de servicios en la nube.
@@ -14,8 +48,10 @@ Algunos modelos compatibles son:
 
 Además, existen otros modelos más específicos que puedes revisar en el catálogo oficial de Ollama.
 
+<a id="instalacion-de-ollama"></a>
 ## ⚙️ Instalación de Ollama
 
+<a id="macos-linux"></a>
 ### 💻🐧 macOS / Linux
 
 Ejecuta en la terminal:
@@ -24,6 +60,7 @@ Ejecuta en la terminal:
 curl -fsSL https://ollama.com/install.sh | sh
 ```
 
+<a id="windows"></a>
 ### 🪟 Windows
 
 Puedes instalar Ollama con PowerShell:
@@ -38,6 +75,7 @@ O bien:
 - Descargar el instalador
 - Ejecutarlo como cualquier otro programa
 
+<a id="instalacion-de-modelos"></a>
 ## ⏬ Instalación de modelos
 
 Es altamente recomendable conocer las especificaciones de tu computador para identificar qué modelos puede soportar correctamente.
@@ -52,38 +90,49 @@ ollama pull deepseek-r1:8b
 
 Para esta guía utilizaremos el modelo `deepseek-r1:8b`.
 
+<a id="guia-basica-de-comandos"></a>
 ## 🧾 Guía básica de comandos
 
+<a id="descargar-un-modelo"></a>
 ### 📥 Descargar un modelo
 
 ```bash
 ollama pull llama3
 ```
 
+<a id="ejecutar-un-modelo"></a>
 ### ▶️ Ejecutar un modelo
 
 ```bash
 ollama run llama3
 ```
 
+<a id="listar-modelos-instalados"></a>
 ### 📋 Listar modelos instalados
 
 ```bash
 ollama list
 ```
 
+![Comando para listar](./images/listcomand.png)
+
+<a id="eliminar-un-modelo"></a>
 ### 🗑️ Eliminar un modelo
 
 ```bash
 ollama rm llama3
 ```
 
+<a id="ver-informacion-de-un-modelo"></a>
 ### 🔎 Ver información de un modelo
 
 ```bash
 ollama show llama3
 ```
 
+![Mostrar informacion modelo](./images/showcomand.png)
+
+<a id="ejemplo-basico-de-uso"></a>
 ## 🚀 Ejemplo básico de uso
 
 Una forma simple de comenzar es ejecutar un modelo directamente desde la terminal:
@@ -100,6 +149,11 @@ Explícame qué es una tabla hash y dame un ejemplo en Python.
 
 Ollama responderá dentro de la misma terminal usando el modelo cargado localmente.
 
+Ejemplo usando curl a la api:
+
+![funcionamiento ollama](./images/curlFacil.png)
+
+<a id="api-local-integrada-de-ollama"></a>
 ## 🌐 API local integrada de Ollama
 
 Ollama incluye una **API HTTP local** que, por defecto, funciona en:
@@ -117,8 +171,10 @@ Esto significa que no solo puedes usar Ollama desde la terminal, sino también d
 
 La API de Ollama es útil cuando necesitas integrar un modelo en una aplicación propia sin depender de servicios externos.
 
+<a id="endpoints-mas-importantes"></a>
 ### 🔌 Endpoints más importantes
 
+<a id="post-apigenerate"></a>
 #### `POST /api/generate`
 
 Sirve para generar texto a partir de un prompt simple.
@@ -137,6 +193,7 @@ Puntos importantes:
 - `prompt`: texto de entrada.
 - `stream`: si es `true`, la respuesta llega por partes; si es `false`, llega como un solo JSON.
 
+<a id="post-apichat"></a>
 #### `POST /api/chat`
 
 Se usa cuando quieres trabajar con mensajes estructurados por roles, similar a un chat.
@@ -159,6 +216,7 @@ Este endpoint es especialmente útil para:
 - Aplicaciones con historial de mensajes
 - Sistemas donde se separa contexto, instrucciones y pregunta del usuario
 
+<a id="get-apitags"></a>
 #### `GET /api/tags`
 
 Permite listar los modelos instalados localmente.
@@ -167,6 +225,7 @@ Permite listar los modelos instalados localmente.
 curl http://localhost:11434/api/tags
 ```
 
+<a id="post-apishow"></a>
 #### `POST /api/show`
 
 Muestra detalles de un modelo, incluyendo información útil para inspección.
@@ -177,6 +236,7 @@ curl http://localhost:11434/api/show -d '{
 }'
 ```
 
+<a id="post-apiembed"></a>
 #### `POST /api/embed`
 
 Genera embeddings, es decir, vectores numéricos que representan texto. Esto se usa mucho en:
@@ -193,6 +253,7 @@ curl http://localhost:11434/api/embed -d '{
 }'
 ```
 
+<a id="post-apicreate"></a>
 #### `POST /api/create`
 
 Permite crear un modelo derivado de otro, agregando instrucciones o configuración personalizada.
@@ -205,6 +266,7 @@ curl http://localhost:11434/api/create -d '{
 }'
 ```
 
+<a id="compatibilidad-con-herramientas-tipo-openai"></a>
 ### 🧠 Compatibilidad con herramientas tipo OpenAI
 
 Ollama también ofrece una capa de compatibilidad con rutas estilo OpenAI en:
@@ -221,10 +283,12 @@ Esto es útil cuando una librería o framework espera endpoints como:
 
 En muchos casos basta con cambiar la `base_url` para reutilizar herramientas diseñadas para OpenAI, manteniendo los modelos ejecutándose de forma local.
 
+<a id="personalizacion-del-modelo"></a>
 ## 🎛️ Personalización del modelo
 
 Ollama permite personalizar modelos en distintos niveles, desde una instrucción simple hasta la creación de una variante completa usando un `Modelfile`.
 
+<a id="1-personalizacion-por-solicitud"></a>
 ### 1. Personalización por solicitud
 
 La forma más rápida es enviar instrucciones en cada llamada mediante:
@@ -249,6 +313,11 @@ curl http://localhost:11434/api/chat -d '{
 
 Esto no crea un modelo nuevo, pero sí cambia su comportamiento durante esa ejecución.
 
+Ejemplo de como se veria por temrinal:
+
+![Ejemplo de model por api](./images/personalizacionmodelo.png)
+
+<a id="2-crear-una-variante-personalizada-con-create"></a>
 ### 2. Crear una variante personalizada con `create`
 
 Si quieres reutilizar siempre la misma personalidad, estilo o configuración, puedes crear un modelo derivado:
@@ -267,6 +336,7 @@ Después puedes usarlo como cualquier otro modelo:
 ollama run deepseek-profesor
 ```
 
+<a id="3-personalizacion-avanzada-con-modelfile"></a>
 ### 3. Personalización avanzada con `Modelfile`
 
 El `Modelfile` es el mecanismo principal para construir una variante propia de un modelo base.
@@ -297,6 +367,7 @@ Y se ejecuta con:
 ollama run deepseek-ingenieria
 ```
 
+<a id="instrucciones-utiles-dentro-de-un-modelfile"></a>
 ### 📚 Instrucciones útiles dentro de un `Modelfile`
 
 Las más importantes para comenzar son:
@@ -308,6 +379,7 @@ Las más importantes para comenzar son:
 - `MESSAGE`: permite precargar mensajes.
 - `ADAPTER`: añade adaptadores como LoRA cuando corresponda.
 
+<a id="parametros-comunes-que-vale-la-pena-conocer"></a>
 ### ⚙️ Parámetros comunes que vale la pena conocer
 
 Algunos parámetros frecuentes son:
@@ -324,6 +396,7 @@ En términos prácticos:
 - Un `num_ctx` mayor permite manejar más contexto, pero consume más recursos.
 - Un mal ajuste puede volver las respuestas más lentas o menos coherentes.
 
+<a id="uso-de-adaptadores-y-ajustes-finos"></a>
 ### 🧪 Uso de adaptadores y ajustes finos
 
 Ollama también permite usar `ADAPTER` en un `Modelfile`, lo que resulta útil cuando trabajas con adaptaciones como LoRA sobre un modelo base compatible.
@@ -336,6 +409,7 @@ Esto sirve para escenarios como:
 
 Este nivel ya es más avanzado y exige cuidar la compatibilidad entre el modelo base y el adaptador.
 
+<a id="recomendaciones-practicas"></a>
 ### 🔍 Recomendaciones prácticas
 
 - Empieza personalizando con `system` antes de crear modelos nuevos.
@@ -344,6 +418,7 @@ Este nivel ya es más avanzado y exige cuidar la compatibilidad entre el modelo 
 - Prueba cambios pequeños en `temperature` y `num_ctx` antes de tocar muchas variables a la vez.
 - Inspecciona modelos con `ollama show` o con `/api/show` para entender mejor su configuración.
 
+<a id="referencias-oficiales"></a>
 ## 📎 Referencias oficiales
 
 - Documentación principal: https://docs.ollama.com/
