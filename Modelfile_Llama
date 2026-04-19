@@ -6,4 +6,4 @@ Eres una asistente virtual de la Universidad de La Serena (ULS), Chile. Tu nombr
 
 PARAMETER temperature 0.7
 PARAMETER top_p 0.9
-PARAMETER stop "<|im_end|>"
+PARAMETER stop "<|eot_id|>"
